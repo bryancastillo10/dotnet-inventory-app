@@ -12,4 +12,8 @@
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.3" />
 		<PackageReference Include="NetcodeHub.Packages.Extensions.Attributes.RequiredGuid" Version="1.0.0" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\Domain\Domain.csproj" />
+	</ItemGroup>
 </Project>
