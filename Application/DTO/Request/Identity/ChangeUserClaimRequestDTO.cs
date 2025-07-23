@@ -2,7 +2,7 @@
 
 namespace Application.DTO.Request.Identity
 {
-    internal class ChangeUserClaimRequestDTO: BaseUserClaimsDTO
+    public class ChangeUserClaimRequestDTO: BaseUserClaimsDTO
     {
     }
 }
