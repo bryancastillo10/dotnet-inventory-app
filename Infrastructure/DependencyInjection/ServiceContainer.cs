@@ -4,8 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using DbContext = Infrastructure.DataAccess.DbContext;
-
+using Infrastructure.DataAccess;
 
 namespace Infrastructure.DependencyInjection
 {
@@ -13,7 +12,7 @@ namespace Infrastructure.DependencyInjection
     {
         public static IServiceCollection AddInfrastructureService(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDbContext<DbContext>(opt => opt.UseSqlServer(config.GetConnectionString("Default")), ServiceLifetime.Scoped);
+            services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(config.GetConnectionString("Default")), ServiceLifetime.Scoped);
 
             services.AddAuthentication(opt =>
             {
@@ -22,7 +21,7 @@ namespace Infrastructure.DependencyInjection
             }).AddIdentityCookies();
 
             services.AddIdentityCore<ApplicationUser>()
-                .AddEntityFrameworkStores<DbContext>()
+                .AddEntityFrameworkStores<AppDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
