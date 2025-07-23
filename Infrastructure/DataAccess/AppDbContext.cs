@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DataAccess
 {
-    public class DbContext (DbContextOptions<DbContext> options): IdentityDbContext<ApplicationUser>(options)
+    public class AppDbContext (DbContextOptions<AppDbContext> options): IdentityDbContext<ApplicationUser>(options)
     {
     }
 }
