@@ -1,4 +1,5 @@
 ﻿using Application.Extension.Identity;
+using Application.Interface.Identity;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +41,7 @@ namespace Infrastructure.DependencyInjection
 
 
             services.AddCascadingAuthenticationState();
-            services.AddScoped<Application.Interface.Identity.IAccount, Account>();
+            //services.AddScoped<IAccount, Account>();
 
             return services;
         }
