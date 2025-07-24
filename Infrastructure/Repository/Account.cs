@@ -4,11 +4,8 @@ using Application.DTO.Request.Identity;
 using Application.DTO.Response;
 using Application.DTO.Response.Identity;
 using Application.Extension.Identity;
-using Application.Interface.Identity;
-using Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Security.Claims;
 
 namespace Infrastructure.Repository
@@ -172,5 +169,59 @@ namespace Infrastructure.Repository
             return UserList;
 
         }
+
+        public async Task SetUpAsync() => await CreateUserAsync(new CreateUserRequestDTO()
+        {
+            Name = "Administrator",
+            Email = "admin@admin.com",
+            Password = "admin123",
+            Policy = Policy.AdminPolicy
+        });
+
+        public async Task<ServiceResponse> UpdateUserAsync(ChangeUserClaimRequestDTO model)
+        {
+            var user = await userManager.FindByIdAsync(model.UserId);
+            if (user == null) return new ServiceResponse(false, "User not found");
+
+
+            var oldUserclaims = await userManager.GetClaimsAsync(user);
+            Claim[] newUserClaims =
+                [
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, model.RoleName),
+                    new Claim("Create", model.Create.ToString()),
+                    new Claim("Update", model.Update.ToString()),
+                    new Claim("Delete", model.Delete.ToString()),
+                    new Claim ("ManageUser", model.ManageUser.ToString()),
+                    new Claim("Read", model.Read.ToString()),
+                ];
+
+            var result = await userManager.RemoveClaimsAsync(user, oldUserclaims);
+            var response = CheckResult(result);
+
+            if (!response.Flag)
+                return new ServiceResponse(false, response.Message);
+
+            var addNewClaims = await userManager.AddClaimsAsync(user, newUserClaims);
+            var updatedUser = CheckResult(addNewClaims);
+
+            if (updatedUser.Flag)
+                return new ServiceResponse(true, "User has been updated successfully");
+            else
+                return updatedUser;
+        }
+
+        //public async Task SaveActivityAsync(ActivityTrackerRequestDTO model)
+        //{
+        //    context.ActivityTracker.Add(model.Adapt(new Tracker()));
+        //    await context.SaveChangesAsync();
+        //}
+
+        //public async Task<IEnumerable<ActivityTrackerResponseDTO>> GetActivitiesAsync()
+        //{
+
+        //    var list = new List<ActivityResponseDTO>();
+        //    var data = (await ContextBoundObject.ActivityTracker.ToListAsync()).Adapt<List>
+        //}
     }
 }
